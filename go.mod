@@ -7,7 +7,7 @@ require (
 	github.com/aws/aws-sdk-go-v2/config v1.32.12
 	github.com/aws/aws-sdk-go-v2/credentials v1.19.12
 	github.com/aws/aws-sdk-go-v2/service/ecs v1.74.0
-	github.com/scttfrdmn/substrate v0.44.3
+	github.com/scttfrdmn/substrate v0.45.2
 	github.com/spf13/cobra v1.10.2
 )
 
@@ -68,5 +68,3 @@ require (
 	modernc.org/memory v1.9.1 // indirect
 	modernc.org/sqlite v1.37.0 // indirect
 )
-
-replace github.com/scttfrdmn/substrate => /Users/scttfrdmn/src/substrate
