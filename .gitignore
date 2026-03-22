@@ -1,0 +1,16 @@
+# Binaries
+ood-fargate-adapter
+dist/
+
+# Go
+*.test
+*.out
+coverage.txt
+
+# macOS
+.DS_Store
+
+# IDE
+.idea/
+.vscode/
+*.swp
