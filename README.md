@@ -1,5 +1,11 @@
 # ood-fargate-adapter
 
+[![CI](https://github.com/scttfrdmn/ood-fargate-adapter/actions/workflows/ci.yml/badge.svg)](https://github.com/scttfrdmn/ood-fargate-adapter/actions/workflows/ci.yml)
+[![Go Report Card](https://goreportcard.com/badge/github.com/scttfrdmn/ood-fargate-adapter)](https://goreportcard.com/report/github.com/scttfrdmn/ood-fargate-adapter)
+[![codecov](https://codecov.io/gh/scttfrdmn/ood-fargate-adapter/branch/main/graph/badge.svg)](https://codecov.io/gh/scttfrdmn/ood-fargate-adapter)
+[![Go Reference](https://pkg.go.dev/badge/github.com/scttfrdmn/ood-fargate-adapter.svg)](https://pkg.go.dev/github.com/scttfrdmn/ood-fargate-adapter)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
 OOD compute adapter for [Amazon ECS Fargate](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/AWS_Fargate.html). Translates Open OnDemand job lifecycle calls (submit / status / delete / info) to the Amazon ECS API.
 
 ## Commands
