@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.0] - 2026-05-30
+
 ### Added
 - Initial scaffold — OOD compute adapter for Amazon ECS Fargate, translating Open OnDemand job lifecycle calls to the Amazon ECS API.
 - CLI commands: `submit` (JSON job spec from stdin → Fargate task, prints task ARN), `status <task-arn>` (OOD-normalized status), `delete <task-arn>` (stop a task), and `info <task-arn>` (full `DescribeTasks` response as JSON).
