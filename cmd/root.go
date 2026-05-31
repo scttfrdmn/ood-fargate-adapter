@@ -12,7 +12,10 @@ var (
 	securityGroups []string
 )
 
+var version = "dev" // overridden at release time via -ldflags -X .../cmd.version
+
 var rootCmd = &cobra.Command{
+	Version: version,
 	Use:   "ood-fargate-adapter",
 	Short: "OOD compute adapter for Amazon ECS/Fargate",
 	Long:  "Translates Open OnDemand job submissions to Amazon ECS Fargate API calls.",
