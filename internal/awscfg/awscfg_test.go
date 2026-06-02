@@ -13,6 +13,13 @@ func TestLoadOptions_NoAssumeRole(t *testing.T) {
 	}
 }
 
+func TestRuntimeUser_OODUserOverride(t *testing.T) {
+	t.Setenv("OOD_USER", "demo")
+	if got := runtimeUser(); got != "demo" {
+		t.Errorf("runtimeUser() = %q, want demo (from OOD_USER)", got)
+	}
+}
+
 func TestLoadOptions_WithAssumeRole(t *testing.T) {
 	// A role ARN appends a credentials-provider option on top of the region option.
 	opts := LoadOptions(context.Background(), Options{
