@@ -10,6 +10,9 @@ package awscfg
 
 import (
 	"context"
+	"os"
+	"os/user"
+	"strings"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/config"
@@ -25,14 +28,34 @@ type Options struct {
 	SessionName   string // optional RoleSessionName (e.g. the OOD username); defaults to "ood-adapter"
 }
 
+// runtimeUser returns the OS username the adapter is running as. OOD's PUN runs the adapter
+// AS the logged-in user, so this is that user — used to expand {username} in a per-user role
+// ARN and to name the STS session. Overridable via OOD_USER for non-PUN invocations.
+func runtimeUser() string {
+	if u := os.Getenv("OOD_USER"); u != "" {
+		return u
+	}
+	if u, err := user.Current(); err == nil && u.Username != "" {
+		return u.Username
+	}
+	return os.Getenv("USER")
+}
+
 // LoadOptions returns the config.LoadDefaultConfig option functions for these Options.
 // Always sets the region; appends an AssumeRole credentials provider only when AssumeRoleARN
 // is set. Empty AssumeRoleARN yields exactly the default chain (single-account behavior).
+//
+// #78: AssumeRoleARN may contain a "{username}" placeholder (e.g.
+// arn:aws:iam::123:role/ood-user-{username}); it is expanded from the runtime user so each
+// portal user assumes their OWN per-user role. The STS RoleSessionName defaults to that user.
 func LoadOptions(ctx context.Context, o Options) []func(*config.LoadOptions) error {
 	opts := []func(*config.LoadOptions) error{config.WithRegion(o.Region)}
 	if o.AssumeRoleARN == "" {
 		return opts
 	}
+
+	uname := runtimeUser()
+	roleARN := strings.ReplaceAll(o.AssumeRoleARN, "{username}", uname)
 
 	// Base config (instance role) used only to call sts:AssumeRole into the per-user role.
 	base, err := config.LoadDefaultConfig(ctx, config.WithRegion(o.Region))
@@ -43,9 +66,12 @@ func LoadOptions(ctx context.Context, o Options) []func(*config.LoadOptions) err
 	stsClient := sts.NewFromConfig(base)
 	sessionName := o.SessionName
 	if sessionName == "" {
+		sessionName = "ood-" + uname
+	}
+	if sessionName == "ood-" {
 		sessionName = "ood-adapter"
 	}
-	provider := stscreds.NewAssumeRoleProvider(stsClient, o.AssumeRoleARN, func(p *stscreds.AssumeRoleOptions) {
+	provider := stscreds.NewAssumeRoleProvider(stsClient, roleARN, func(p *stscreds.AssumeRoleOptions) {
 		p.RoleSessionName = sessionName
 		if o.ExternalID != "" {
 			p.ExternalID = aws.String(o.ExternalID)
