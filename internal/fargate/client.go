@@ -18,8 +18,11 @@ type Client struct {
 }
 
 // New creates an ECS client using the default AWS credential chain.
-func New(ctx context.Context, region string) (*Client, error) {
-	cfg, err := config.LoadDefaultConfig(ctx, config.WithRegion(region))
+func New(ctx context.Context, region string, optFns ...func(*config.LoadOptions) error) (*Client, error) {
+	if len(optFns) == 0 {
+		optFns = []func(*config.LoadOptions) error{config.WithRegion(region)}
+	}
+	cfg, err := config.LoadDefaultConfig(ctx, optFns...)
 	if err != nil {
 		return nil, fmt.Errorf("load AWS config: %w", err)
 	}
